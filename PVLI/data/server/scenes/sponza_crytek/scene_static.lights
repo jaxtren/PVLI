@@ -1,0 +1,36 @@
+skyTexture "sky.hdr"
+
+point
+{
+    radiance "15 15 40"
+    radius 0.01
+    timeScale 0
+    timeOffset 15
+    path top_path.txt
+}
+
+point
+{
+    radiance "40 15 15"
+    radius 0.01
+    timeScale 0
+    path bottom_path.txt
+}
+
+point
+{
+    radiance "15 40 15"
+    radius 0.01
+    timeOffset 10
+    timeScale 0
+    path bottom_path.txt
+}
+
+point
+{
+    radiance "30 30 30"
+    radius 0.01
+    timeOffset 17
+    timeScale 0
+    path middle_path.txt
+}

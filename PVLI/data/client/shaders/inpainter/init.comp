@@ -1,0 +1,12 @@
+#version 430
+layout(local_size_x = 8, local_size_y = 8) in;
+
+uniform ivec2 size;
+layout(binding = 0, rgba8ui) uniform uimage2D texture;
+
+void main() {
+    ivec2 p = ivec2(gl_GlobalInvocationID.xy);
+    if(p.x >= size.x || p.y >= size.y) return;
+    uvec4 c = imageLoad(texture, p);
+    imageStore(texture, p, c.w == 0 ? uvec4(0) : uvec4(c.rgb, 255));
+}

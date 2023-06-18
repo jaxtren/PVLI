@@ -1,0 +1,44 @@
+#version 430
+layout(local_size_x = 8, local_size_y = 8) in;
+
+uniform ivec2 srcSize;
+layout(binding = 0) uniform sampler2D src;
+
+uniform ivec2 dstSize;
+layout(binding = 0, rgba8ui) uniform uimage2D dst;
+
+#ifdef SRC_ALPHA_MASK
+vec4 sampleMaskedPixel(ivec2 p) {
+    vec4 c = texelFetch(src, p, 0);
+    if (c.w == 0) return vec4(0);
+    return vec4(c.xyz, 1);
+}
+#endif
+
+void main() {
+    ivec2 p = ivec2(gl_GlobalInvocationID.xy);
+    if (p.x >= dstSize.x || p.y >= dstSize.y) return;
+
+    #ifdef PUSH
+
+    #ifdef SRC_ALPHA_MASK
+    ivec2 p2 = p * 2;
+    vec4 c = sampleMaskedPixel(p2) +
+             sampleMaskedPixel(p2 + ivec2(1,0)) +
+             sampleMaskedPixel(p2 + ivec2(0,1)) +
+             sampleMaskedPixel(p2 + ivec2(1,1));
+    #else
+    vec4 c = texture(src, vec2(p*2 + 1) / srcSize);
+    #endif
+
+    if (c.w > 0) c /= c.w;
+
+    #else // PULL
+
+    if (imageLoad(dst, p).w > 0) return;
+    vec4 c = texture(src, (vec2(p) + 0.5) * 0.5 / srcSize);
+
+    #endif
+
+    imageStore(dst, p, clamp(ivec4(c * 255), 0, 255));
+}

@@ -1,0 +1,7 @@
+.idea/
+build*/
+.vs
+cmake-build-*/
+imgui.ini
+*.ptx
+*.pyc

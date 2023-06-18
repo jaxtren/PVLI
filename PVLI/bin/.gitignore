@@ -1,0 +1,7 @@
+/client
+/server
+/tests
+/Debug
+/Release
+/RelWithDebInfo
+gui.ini
